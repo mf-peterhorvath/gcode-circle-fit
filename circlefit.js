@@ -22,25 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+const { type } = require("os");
+
 var CIRCLEFIT = (function () {
   var my = {},
-      points = [];
+    points = [];
 
   function linearSolve2x2(matrix, vector) {
-    var det = matrix[0]*matrix[3] - matrix[1]*matrix[2];
+    var det = matrix[0] * matrix[3] - matrix[1] * matrix[2];
     if (det < 1e-8) return false; //no solution
-    var y = (matrix[0]*vector[1] - matrix[2]*vector[0])/det;
-    var x = (vector[0] - matrix[1]*y)/matrix[0];
-    return [x,y];
+    var y = (matrix[0] * vector[1] - matrix[2] * vector[0]) / det;
+    var x = (vector[0] - matrix[1] * y) / matrix[0];
+    return [x, y];
   }
 
   my.addPoint = function (x, y) {
-    points.push({x: x, y: y});
-  }
+    points.push({ x: x, y: y });
+  };
 
   my.resetPoints = function () {
     points = [];
-  }
+  };
 
   my.compute = function () {
     var result = {
@@ -48,44 +50,44 @@ var CIRCLEFIT = (function () {
       projections: [],
       distances: [],
       success: false,
-      center: {x:0, y:0},
+      center: { x: 0, y: 0 },
       radius: 0,
       residue: 0,
-      computationTime: performance.now()
     };
 
     //means
-    var m = points.reduce(function(p, c) {
-      return {x: p.x + c.x/points.length,
-              y: p.y + c.y/points.length};
-    },{x:0, y:0});
-    
+    var m = points.reduce(
+      function (p, c) {
+        return { x: p.x + c.x / points.length, y: p.y + c.y / points.length };
+      },
+      { x: 0, y: 0 }
+    );
+
     //centered points
-    var u = points.map(function(e){
-      return {x: e.x - m.x,
-              y: e.y - m.y};
+    var u = points.map(function (e) {
+      return { x: e.x - m.x, y: e.y - m.y };
     });
 
     //solve linear equation
-    var Sxx = u.reduce(function(p,c) {
-      return p + c.x*c.x;
-    },0);
+    var Sxx = u.reduce(function (p, c) {
+      return p + c.x * c.x;
+    }, 0);
 
-    var Sxy = u.reduce(function(p,c) {
-      return p + c.x*c.y;
-    },0);
+    var Sxy = u.reduce(function (p, c) {
+      return p + c.x * c.y;
+    }, 0);
 
-    var Syy = u.reduce(function(p,c) {
-      return p + c.y*c.y;
-    },0);
+    var Syy = u.reduce(function (p, c) {
+      return p + c.y * c.y;
+    }, 0);
 
-    var v1 = u.reduce(function(p,c) {
-      return p + 0.5*(c.x*c.x*c.x + c.x*c.y*c.y);
-    },0);
+    var v1 = u.reduce(function (p, c) {
+      return p + 0.5 * (c.x * c.x * c.x + c.x * c.y * c.y);
+    }, 0);
 
-    var v2 = u.reduce(function(p,c) {
-      return p + 0.5*(c.y*c.y*c.y + c.x*c.x*c.y);
-    },0);
+    var v2 = u.reduce(function (p, c) {
+      return p + 0.5 * (c.y * c.y * c.y + c.x * c.x * c.y);
+    }, 0);
 
     var sol = linearSolve2x2([Sxx, Sxy, Sxy, Syy], [v1, v2]);
 
@@ -97,28 +99,72 @@ var CIRCLEFIT = (function () {
     result.success = true;
 
     //compute radius from circle equation
-    var radius2 = sol[0]*sol[0] + sol[1]*sol[1] + (Sxx+Syy)/points.length;
+    var radius2 =
+      sol[0] * sol[0] + sol[1] * sol[1] + (Sxx + Syy) / points.length;
     result.radius = Math.sqrt(radius2);
 
     result.center.x = sol[0] + m.x;
     result.center.y = sol[1] + m.y;
 
-    points.forEach(function(p) {
-      var v = {x: p.x - result.center.x, y: p.y - result.center.y};
-      var len2 = v.x*v.x + v.y*v.y;
+    points.forEach(function (p) {
+      var v = { x: p.x - result.center.x, y: p.y - result.center.y };
+      var len2 = v.x * v.x + v.y * v.y;
       result.residue += radius2 - len2;
       var len = Math.sqrt(len2);
       result.distances.push(len - result.radius);
       result.projections.push({
-        x: result.center.x + v.x*result.radius/len,
-        y: result.center.y + v.y*result.radius/len
-      });     
+        x: result.center.x + (v.x * result.radius) / len,
+        y: result.center.y + (v.y * result.radius) / len,
+      });
     });
 
-    result.computationTime = performance.now() - result.computationTime;
-
     return result;
-  }
+  };
 
   return my;
-}());
+})();
+
+// Make sure we got a filename on the command line.
+if (process.argv.length < 3) {
+  console.log("Usage: node " + process.argv[1] + " FILENAME");
+  process.exit(1);
+}
+// Read the file and print its contents.
+var fs = require("fs"),
+  filename = process.argv[2];
+fs.readFile(filename, "utf8", function (err, data) {
+  if (err) throw err;
+  console.log("OK: " + filename);
+  lines = data.split("\n");
+  lines.forEach((line) => {
+    words = line.split(" ");
+    var x, y;
+    words.forEach((word) => {
+      if (word[0] === "X") {
+        x = parseFloat(word.slice(1));
+      }
+      if (word[0] === "Y") {
+        y = parseFloat(word.slice(1));
+      }
+    });
+    if (!(x === undefined || y === undefined)) {
+      CIRCLEFIT.addPoint(x, y);
+    }
+  });
+  result = CIRCLEFIT.compute();
+  // console.log(result.points);
+  if (result.success) {
+    console.log(
+      "Center = {" +
+        result.center.x +
+        "," +
+        result.center.y +
+        "}, Radius = " +
+        result.radius +
+        ", Diameter = " +
+        2 * result.radius +
+        ", Residue = " +
+        result.residue
+    );
+  }
+});

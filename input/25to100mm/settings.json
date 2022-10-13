@@ -1,0 +1,131 @@
+{
+  "modifiers": [],
+  "groupSettings": {
+    "0": {
+      "fiber": false,
+      "fiberType": 17,
+      "fiberAngles": [
+        0,
+        0.7853981633974483,
+        1.5707963267948966,
+        2.356194490192345
+      ],
+      "fiberStartParameters": [],
+      "concentricShells": 2,
+      "fillAngles": [
+        -0.7853981633974483,
+        0.7853981633974483
+      ],
+      "fiberPatternType": 0,
+      "numberOfStripes": 3,
+      "layersInStripe": 4
+    }
+  },
+  "groupSettingsPreset": {
+    "fiberType": 17,
+    "fiberAngles": [
+      0,
+      0.7853981633974483,
+      1.5707963267948966,
+      2.356194490192345
+    ],
+    "fiberStartParameters": [],
+    "concentricShells": 2,
+    "fillAngles": [
+      -0.7853981633974483,
+      0.7853981633974483
+    ],
+    "fiber": false,
+    "fiberPatternType": 0,
+    "type": 0,
+    "bottomFiberLayers": 4,
+    "topFiberLayers": 4
+  },
+  "partSettings": {
+    "presets": {
+      "turboSupports": false,
+      "turboPrint": false,
+      "leakResistant": false,
+      "fastRafts": false,
+      "draftMode": false
+    },
+    "supportChunkInfo": {
+      "type": 0,
+      "gridSize": 20,
+      "radialCuts": 2,
+      "translation": {
+        "x": 0,
+        "y": 0,
+        "theta": 0
+      }
+    },
+    "supportExtent": 1,
+    "supportType": 0,
+    "slicing": {
+      "scaler": 1,
+      "euler": {
+        "_x": 0,
+        "_y": 0,
+        "_z": 0
+      },
+      "units": "mm",
+      "layerHeight": 0.1,
+      "originalLayerHeight": null
+    },
+    "roofing": {
+      "raisePart": false,
+      "nozzleSize": 0.4,
+      "plasticMaterial": 501,
+      "releaseMaterial": 0,
+      "supportMaterial": 0,
+      "bottomTopThickness": 4,
+      "shellToSupportRatio": 1,
+      "shellToInfillRatio": 1
+    },
+    "pathing": {
+      "supports": true,
+      "supportsAngle": 0,
+      "useBrim": false,
+      "numberOfShells": 2,
+      "fillType": 9,
+      "fillDensity": 0.5,
+      "fiberSize": 0.9,
+      "fiberMaterial": 0,
+      "printerRev": 1,
+      "saveThinFeatures": false,
+      "outsideIn": false,
+      "shellCounterwinding": false,
+      "staggerSeams": false
+    },
+    "gcoding": {
+      "dislocationCheck": true,
+      "fiberTurnsExtrude": null,
+      "fiberStraightsExtrude": null,
+      "lockOrientation": false
+    },
+    "postprocessing": {
+      "furnaceSelection": null
+    },
+    "laserPointScans": {
+      "enableBlacksmith": false,
+      "generatePointScans": false,
+      "diskRadius": 3,
+      "enableBlacksmithPurgeTower": true,
+      "generateFiberScans": false
+    },
+    "custom": {
+      "THIN_HOLE_OFFSET": 0
+    },
+    "features": [],
+    "pinnedStats": []
+  },
+  "laserScans": {},
+  "layerSettings": {},
+  "modifierSettings": {},
+  "numWorkers": 0,
+  "pauses": {},
+  "schema": {
+    "version": "1.9.0"
+  },
+  "supportCutLayers": {}
+}
